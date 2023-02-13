@@ -60,7 +60,7 @@ InputVar2={
 //  BM_ARM_MUSCLES_RIGHT         : Muscles type. CONST_MUSCLES_3E_HILL by default (used for validation)
 //  ScaleStrengthMuscle          : Folder to scale strength muscles 
 //  ----------------------------- */
-//  #define BM_ARM_SHOULDER_RHYTHM ON
+  #define BM_ARM_SHOULDER_RHYTHM ON
 //  #define BM_ARM_MUSCLES_RIGHT CONST_MUSCLES_3E_HILL  
 //  
 //  AnyFolder ScaleStrengthMuscle ={

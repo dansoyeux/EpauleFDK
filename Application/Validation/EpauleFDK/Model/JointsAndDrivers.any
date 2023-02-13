@@ -132,6 +132,8 @@ AnyFolder Drivers = {
 //    Reaction.Type = {Off};    
 //  };
 
+
+//------------------------------------------------------------------------------------ 
   // Abduction movement. Modified compared to the Bergmann Model to introduce slower beginning and ending
   AnyVar startangle = 15;
   AnyVar endangle = 120;
@@ -145,7 +147,7 @@ AnyFolder Drivers = {
     B = { {pi/2, -pi/2} };
     Reaction.Type = {Off};    
   };
-
+//------------------------------------------------------------------------------------
   
   // Keep the hand in the frontal plane
   AnyKinEq HandConstraint = {
