@@ -214,10 +214,11 @@ AnySeg Scapula ={
   
   //--------------------------------------------------------------------------------------------
   // Glenoid implant
+  
   AnyFolder &Param = Main.InputVariables.ImplantParameters;
   AnyRefNode GlenImplantPos = {
     sRel = .Param.GlenPosition.Position;
-    ARel = .Param.GlenPosition.Rotation;
+  ARel = .Param.GlenPosition.Rotation;
     
     AnySurfSTL GleneSTL = {
       FileName = "../../../Body/STLModels/ImplantModels/" + ..Param.ImplantNames.GlenoidName+ ".stl";
@@ -231,8 +232,7 @@ AnySeg Scapula ={
   };    
   
   // End glenoid implant
-  
-  
+    
   //--------------------------------------------------------------------------------------------
   
   
