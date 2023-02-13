@@ -29,7 +29,8 @@ SelectedOutput.Right = {
 //      AnyVar ConoidLigamentPullForce = ....Right.ShoulderArm.Jnt.ConoidLigamentReaction.Ft;
 //      AnyVar TrapezoidLigamentPullForce = ....Right.ShoulderArm.Jnt.TrapezoidLigamentReaction.Ft;
       
-      
+      //Only for BallAndSocket GH, otherwise theses general muscles don't exist when FDK is activated
+//      #if BallAndSocket == 1
       /// Distraction positive
       AnyVar GlenoHumeral_DistractionForce = ....Right.ShoulderArm.Jnt.GHReactions.ResultanForce.FTotalLocal[0];
       /// Superior positive
@@ -37,7 +38,7 @@ SelectedOutput.Right = {
       /// Posterior positive
       AnyVar GlenoHumeral_AnteroPosteriorForce = ....Right.ShoulderArm.Jnt.GHReactions.ResultanForce.FTotalLocal[2];
       // scapula gh ref
-      
+//      #endif
       
       /// Medial positive
       AnyVar ElbowHumeroUlnar_MedioLateralForce = ....Right.ShoulderArm.Jnt.HumeroUlnarJoint.Constraints.Reaction.Fout[0];

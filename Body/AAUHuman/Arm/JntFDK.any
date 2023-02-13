@@ -1,0 +1,558 @@
+//This is the definition of the joints in the arm
+
+
+#if BM_ARM_THORAX_SCAPULA_CONTACT == _MULTIPLE_POINT_CONTACT_
+
+
+DEFAULT_PARAMETER_FOLDER ThoraxScapulaMultiPointContactSettings(
+    NPARAM = 2,
+    PARAM_1 = Base, PARAM_1_TYPE = AnyVar,
+    PARAM_2 = Exponent, PARAM_2_TYPE = AnyVar
+) = {
+    Default = {
+      Base = 1;
+      // This is an insanely large number, but the fomula behind 
+      // applies log(Exponent)
+      #if (ANYBODY_V1 > 7)|(ANYBODY_V1 == 7 & ANYBODY_V2 >= 3)
+      Exponent = 2.718281^(200);
+      #else
+      Exponent = 4^120;
+      #endif
+    };
+};
+#endif
+
+
+/// Definition of SternoClavicular (SC) joint
+AnySphericalJoint SternoClavicularJoint = {
+  AnyRefNode &thorax_sc = ..ShoulderRef.scj;
+  AnyRefNode &clavicula_sc = ..Seg.Clavicula.scj;
+  Orientation = {
+    // These settings are kept to mimic the  
+    // previous implementation.
+    Type = RotAxesAngles;
+    Axis1 = y;
+    Axis2 = z;
+    Axis3 = x;
+  };
+};
+
+
+/// Defintion of Acromial-Clavicular (AC) joint
+AnySphericalJoint AcromioClavicularJoint = {
+  AnyRefNode &clavicula_ac = ..Seg.Clavicula.acj;
+  AnyRefNode &scapula_ac = ..Seg.Scapula.acj;
+  Orientation = {
+    // These settings are kept to mimic the  
+    // previous implementation.
+    Type = RotAxesAngles;
+    Axis1 = y;
+    Axis2 = z;
+    Axis3 = x;
+  };
+
+};
+
+//---------------------------------------------------------------------------
+///// Definition of GH joint
+//AnySphericalJoint GlenoHumeralJoint = {
+//  AnyRefNode &scapula_gh = ..Seg.Scapula.gh;
+//  AnyRefNode &humerus_gh = ..Seg.Humerus.gh; 
+//  //These are the reactions of the GH joint they are normally set to "Off Off Off" if the file 
+//  // GHReactions.any is being used, if this is not the case the reactions should be set to "On On On"
+//  Constraints.Reaction.Type={Off,Off,Off};
+//  Orientation = {
+//    // These settings are kept to mimic the  
+//    // previous implementation.
+//    Type = RotAxesAngles;
+//    Axis1 = y;
+//    Axis2 = z;
+//    Axis3 = y;
+//  };
+//
+//};
+
+//Definition of GH joint Rotation
+AnyKinRotational GHRot = {
+    AnyRefNode &scapula_gh = ..Seg.Scapula.gh;
+  AnyRefNode &humerus_gh = ..Seg.Humerus.gh;
+  Type = RotAxesAngles;
+  Axis1 = y;
+  Axis2 = z;
+  Axis3 = y;
+}; 
+
+///Definition of GH Linear movement
+AnyKinLinear GHLin = {
+  AnyRefNode &scapula_gh = ..Seg.Scapula.gh.ghProth;
+  AnyRefNode &humerus_gh = ..Seg.Humerus.gh;
+  Ref=0; //use this for shifting between the two ref systems: scapula=0, humerus=1
+};
+
+
+//This file includes the glenohumeral reactions created by a number of pushing muscles
+//This file is only included if the GH BallAndSocket joint is activated
+#include "GHReactions.any"
+
+
+// Driver GH dans le cas du ball&Socket OU du FDK
+AnyKinEqSimpleDriver GHLinCon = {
+  AnyKinMeasure &ref = .GHLin;
+  DriverPos = {Main.InputVariables.JointPosition.px,Main.InputVariables.JointPosition.py,Main.InputVariables.JointPosition.pz}; //px, py et pz definis dans InputVariables.any
+  DriverVel = {0,0,0};
+  
+  #if BallAndSocket==1
+    Reaction.Type={Off,Off,Off};
+    CType = {Soft,Soft,Soft};
+  #endif
+ 
+  #if BallAndSocket==0
+  //      Reaction.Type={On, Off,Off};
+  //      CType = {Soft,ForceDep,ForceDep};
+    Reaction.Type={Off, Off,Off};
+    CType = {ForceDep,ForceDep,ForceDep};
+  #endif
+};
+
+
+#if BallAndSocket==0
+
+  AnyForce SpringForce = {
+    AnyFloat Eps = {
+      .GHLin.Pos[0]-Main.InputVariables.JointPosition.px,
+      .GHLin.Pos[1]-Main.InputVariables.JointPosition.py,
+      .GHLin.Pos[2]-Main.InputVariables.JointPosition.pz
+    };
+    
+    AnyKinLinear &ref = .GHLin;
+          
+    // non linear model
+    AnyFloat k0 = Main.InputVariables.SettingValues.FDK.k0;
+    AnyFloat k1 = Main.InputVariables.SettingValues.FDK.k1;
+    AnyFloat k2 = Main.InputVariables.SettingValues.FDK.k2;
+    AnyFloat k3 = Main.InputVariables.SettingValues.FDK.k3;
+    AnyFloat k4 = Main.InputVariables.SettingValues.FDK.k4;
+    AnyFloat kz = Main.InputVariables.SettingValues.FDK.kz;
+    
+    F={ 
+      -(k0 + k1*Eps[0] + k2*Eps[0]^2 + k3*Eps[0]^3 + k4*Eps[0]^4), 
+      -(k0 + k1*Eps[1] + k2*Eps[1]^2 + k3*Eps[0]^3 + k4*Eps[1]^4),
+      -kz*Eps[2]
+    };
+  };
+#endif
+
+#if stl==1
+AnyForceSurfaceContact ProtheseContact = {
+  AnySurfSTL &master = ..Seg.Humerus.HumerusBoneGeometryNode.HumImplantPos.ProtHumSTL;
+  AnySurfSTL &slave = ..Seg.Scapula.GlenImplantPos.GleneSTL;
+  PressureModule = Main.InputVariables.SettingValues.Contact.kd;
+  ForceViewOnOff = On;
+  
+  AnyDrawForceSurface drw = {
+    Visible = On;
+    //Opacity = 1;
+    //DrawSurf1RGB = {0, 0, 0};
+    //DrawSurf2RGB = {1, 1, 1};
+    //AnyStyleDrawMaterial &<Insert name0> = <Insert object reference (or full object definition)>; You can make any number of these objects!
+  };
+
+  AnyDrawLine drwForceContact = {
+    p0 =  p1 - .Fslave / 20000;
+    p1 =.COP;
+    Line = {
+      Style = Line3DStyleFull;
+      Thickness = 0.001;
+      RGB = {1, 0, 0};
+      Start = {
+        Style = Line3DCapStyleNone;
+        RGB = {1, 0, 0};
+        Thickness = 0;
+        Length = 0;
+      };
+      End = {
+        Style = Line3DCapStyleArrow;
+        RGB = {1, 0, 0};
+        Thickness = 0.002;
+        Length = 0.002;
+      };
+    };
+    // Text = "F_contact";
+    
+    AnyRefFrame &G = Main.Model.EnvironmentModel.GlobalRef;
+  };
+
+};
+#endif
+
+// #include "DrawContactForces.any"
+
+
+
+
+//End of GH definition
+//---------------------------------------------------------------------------
+
+///Definition of the HumeroUlnarJoint (elbow flexion extension).
+AnyRevoluteJoint HumeroUlnarJoint = {
+  Axis = x;
+  AnyRefNode &HumerusFE = ..Seg.Humerus.fe;
+  AnyRefNode &UlnaFE = ..Seg.Ulna.fe;
+};
+
+
+/// This binds one DOF between humerus and Radius. Since AnyBody
+/// does not have a 5 DOF joint type we implement in manually here.
+AnyFolder HumeroRadialJoint = {
+   AnyKinLinear Linear = {
+     AnyRefNode &RadiusPs = ...Seg.Radius.PointHumeralRadialJoint;
+     AnyRefNode &UlnaPs = ...Seg.Humerus.fe; 
+     Ref = 0;
+   };
+   AnyKinEq Constraints = {
+     AnyKinMeasure& Linear  = .Linear;
+     MeasureOrganizer = {0};
+     // Reactions are implemented explicitly below
+     Reaction.Type = {Off};
+   };
+
+  // Since the previous implementation implemented reaction forces   
+  // between some explicit points 'ps2Reac' we do the same here. 
+   AnyReacForce ReacForce = 
+   {
+     AnyKinMeasureOrg RadiusHumerus = {
+       MeasureOrganizer = {0};
+       AnyKinLinear Lin = 
+       {
+         Ref = 0;
+         AnyRefFrame &Radius = .....Seg.Radius.PS2Reac;
+         AnyRefFrame &Humerus = .....Seg.Humerus.fe;
+       };
+     };
+   };
+
+};
+
+
+AnyTransSphericalJoint ProximalRadioUlnarJoint = { 
+  AnyRefNode &RadiusPs = ..Seg.Radius.PointPS2;
+  AnyRefNode &UlnaPs = ..Seg.Ulna.ps2; 
+  // Reactions are disabled, because the are implemented explicitly below. 
+  Constraints.Reaction.Type={Off,Off};
+  Axis = x;
+  Orientation = {
+    // These settings are kept to mimic the previous  
+    // implementation from the PSRotProximal measure.
+    Axis1 = x;
+    Axis2 = y;
+    Axis3 = z;
+    Type = RotAxesAngles;
+  };
+  
+  // Since the previous implementation implemented reaction forces   
+  // between some explicit points 'ps2Reac' we do the same here. 
+  AnyReacForce ReacForce = 
+  {
+    AnyKinMeasureOrg RadiusUlna = {
+      MeasureOrganizer = {0,2};
+      AnyKinLinear Lin = 
+      {
+        Ref = 0;
+        AnyRefFrame &Ulna = .....Seg.Ulna.ps2Reac;
+        AnyRefFrame &Radius = .....Seg.Radius.PS2Reac;
+      };
+    };
+  };
+
+};
+
+
+
+
+
+
+
+AnyTransSphericalJoint DistalRadioUlnarJoint = {
+    AnyRefNode &UlnaPs = ..Seg.Ulna.ps2_usRot;
+    AnyRefNode &RadiusPs = ..Seg.Radius.PS;
+    Axis = y;
+}; 
+
+
+
+
+
+
+////Definition of wrist joint
+AnyRevoluteJoint WristJointFlexion = {
+  Axis = y; //flexion extension
+  AnyRefNode &radius_wj = ..Seg.Radius.wj;
+  AnyRefNode &hand_wj =..Seg.WristJointSeg.FlexionExtensionAxis;
+};//End WristJoint
+
+AnyRevoluteJoint WristJointDeviation = {
+  Axis = z; //radial ulnar deviation
+  AnyRefNode &radius_wj = ..Seg.WristJointSeg.RadialUlnarDeviation;
+  AnyRefNode &hand_wj =..Seg.Hand.HandRef.wj;
+};//End WristJoint
+
+
+
+//Scapula thorax gliding plane
+
+#if BM_ARM_THORAX_SCAPULA_CONTACT == _MULTIPLE_POINT_CONTACT_
+
+
+AnyKinPointSurface ScapulaAIThoraxMeasure = {
+  Base = .ThoraxScapulaMultiPointContactSettings.Base;
+  Exponent=.ThoraxScapulaMultiPointContactSettings.Exponent;
+  #include "ThoraxScapulaContactPoints.any"
+  
+  //RefFrames = ObjSearch("..Trunk.SegmentsThorax.ThoraxSeg.Right.RibNodes.*","AnyRefFrame"); 
+  AnyFolder &surf3 =..Seg.Scapula.Ellipsoid_ai.ellipsoid;
+ 
+  NormedMeasureOnOff = On;
+
+  
+};
+
+AnyKinEqSimpleDriver ScapulaAIThoraxNodeDriver = {  
+  
+  AnyKinMeasure &Measure1=.ScapulaAIThoraxMeasure;
+  
+  DriverPos = {0};
+  DriverVel = {0};
+  Reaction.Type = {Off};
+  
+};
+
+#endif
+
+
+
+#if BM_ARM_THORAX_SCAPULA_CONTACT == _ELLIPSOID_CONTACT_
+
+AnyKinEqSimpleDriver ScapulaAIThoraxNodeDriver = {
+  
+  AnyKinPointSurface Measure1 = {
+    AnyRefFrame &r1 = ...Seg.Scapula.ScapulaSlidingAI;
+    AnySurface &s1 = ...ShoulderRef.ScapulaEllipsoidOrigin.Elipse;
+    NormedMeasureOnOff = Off;
+  };
+  
+  DriverPos = {0};
+  DriverVel = {0};
+  Reaction.Type = {Off};
+};
+
+#endif
+
+
+
+  AnyReacForce ScapulaAIThorax_ContactReaction = {
+    Type = NonNegative;
+    AnyKinMeasure &ref=.ScapulaAIThoraxNodeDriver.Measure1 ;
+  };
+
+
+
+//Simple muscle model 
+AnyMuscleModel ReactionMuscle = {
+  F0 = 5000;
+};
+
+
+
+//Definitions of ligaments
+AnyKinPLine ConoideumLigament = {
+  AnyRefNode &scapula = ..Seg.Scapula.conoid;
+  AnyRefNode &clavicle = ..Seg.Clavicula.conoid;   
+  AnyDrawPLine drwline= {Thickness=0.005;RGB={1,0,0};};
+};
+
+//Artificial muscle will produce reaction in the ligament
+AnyMuscleViaPoint ConoidLigamentReaction = {
+  AnyRefNode &scapula = ..Seg.Scapula.conoid;
+  AnyRefNode &clavicle = ..Seg.Clavicula.conoid; 
+  AnyMuscleModel &ref = .ReactionMuscle; 
+  AnyDrawMuscle drwlig = {RGB={0,0,1};MaxStress = 75000000.000000;};
+  EXCLUDE_MUSCLE_METABOLISM
+   
+};
+//Artificial muscle will produce reaction in the ligament
+AnyMuscleViaPoint TrapezoidLigamentReaction = {
+  AnyRefNode &scapula = ..Seg.Scapula.trapezoid;
+  AnyRefNode &clavicle = ..Seg.Clavicula.trapezoid;   
+  AnyMuscleModel &ref = .ReactionMuscle; 
+  AnyDrawMuscle drwlig = {RGB={0,0,1};MaxStress = 75000000.000000;};
+  EXCLUDE_MUSCLE_METABOLISM
+   
+};
+
+
+#if BM_ARM_THORAX_SCAPULA_CONTACT == _MULTIPLE_POINT_CONTACT_
+
+
+AnyKinPointSurface ScapulaTSThoraxMeasure = 
+{
+  Base =.ThoraxScapulaMultiPointContactSettings.Base;
+  Exponent=.ThoraxScapulaMultiPointContactSettings.Exponent;
+ 
+  #include "ThoraxScapulaContactPoints.any"
+    
+  AnyFolder &surf3 =..Seg.Scapula.Ellipsoid_ts.ellipsoid;
+  NormedMeasureOnOff = On;
+ 
+};
+
+
+AnyFolder &scapula_ai_org  =.Seg.Scapula.ai;
+scapula_ai_org ={
+  AnyRefNode node_org ={ 
+    sRel= {-0.02,0,0};
+    AnySurfEllipsoid  ellipsoid ={ 
+      Radius={0.065,0.06,0.015};
+      //      AnyDrawParamSurf drw ={RGB={0,1,0};};
+    };
+  };
+};
+
+
+AnyFolder &scapula_ts_org  =.Seg.Scapula.ts;
+scapula_ts_org ={
+  AnyRefNode node_org ={ 
+    sRel= {-0.02,0,0};
+    
+    AnySurfEllipsoid  ellipsoid ={ 
+      Radius={0.05,0.05,0.015};
+      //      AnyDrawParamSurf drw ={RGB={0,1,0};};
+    };
+  };  
+};
+
+AnyFolder &scapula  =.Seg.Scapula;
+
+scapula ={
+  AnyRefNode ControlNode0_ai = {sRel= .ai.sRel+...Seg.Scapula.Scale({-0.02,...Sign*0.01,0.01}); 
+//    AnyDrawNode drw ={RGB={1,0,0};ScaleXYZ={1,1,1}*0.005;};
+  };
+  AnyRefNode ControlNode1_ai = {sRel= .ControlNode0_ai.sRel+...Seg.Scapula.Scale({0.07,...Sign*0.01,0});
+//    AnyDrawNode drw ={RGB={1,0,0};ScaleXYZ={1,1,1}*0.005;};
+  };
+  AnyRefNode ControlNode2_ai = {sRel= .ControlNode0_ai.sRel+...Seg.Scapula.Scale({0.0,...Sign*(0.07+0.01),0}); 
+//    AnyDrawNode drw={RGB={1,0,0};ScaleXYZ={1,1,1}*0.005;};
+  };
+  AnyRefNode ControlNode3_ai = {sRel= .ControlNode0_ai.sRel+...Seg.Scapula.Scale({0,...Sign*0.01,0.015});
+//    AnyDrawNode drw={RGB={1,0,0};ScaleXYZ={1,1,1}*0.005;};
+  };
+  
+  AnyRefNode Ellipsoid_ai ={ 
+    sRel=.ControlNode0_ai.sRel;
+    
+    AnySurfEllipsoid  ellipsoid ={ 
+      AnyVar r1 = vnorm(..ControlNode0_ai.sRel-..ControlNode1_ai.sRel);
+      AnyVar r2 = vnorm(..ControlNode0_ai.sRel-..ControlNode2_ai.sRel);
+      AnyVar r3 = vnorm(..ControlNode0_ai.sRel-..ControlNode3_ai.sRel);
+      Radius ={r1,r2,r3};
+      // Radius={0.085,0.06,0.015};
+      // Radius={0.07,0.06,0.015};
+    //  AnyDrawParamSurf drw ={};
+    };
+  };
+  
+  AnyRefNode ControlNode0_ts = {sRel= .ts.sRel+...Seg.Scapula.Scale({-0.02,...Sign*(0.01),0.00});
+//    AnyDrawNode drw ={RGB={1,0,0};ScaleXYZ={1,1,1}*0.005;};
+  };
+  AnyRefNode ControlNode1_ts = {sRel= ...Seg.Scapula.Scale({-0.094471940+0.005, ...Sign*(-0.034+0.01), 0.01015005});
+//    AnyDrawNode drw ={RGB={1,0,0};ScaleXYZ={1,1,1}*0.005;};
+};
+  AnyRefNode ControlNode2_ts = {sRel= ...Seg.Scapula.Scale({-0.1319359, ...Sign*(-0.0667+0.01), 0.008610081}); 
+//    AnyDrawNode drw={RGB={1,0,0};ScaleXYZ={1,1,1}*0.005;};
+};
+  AnyRefNode ControlNode3_ts = {sRel= .ControlNode0_ts.sRel+...Seg.Scapula.Scale({0,...Sign*(0.01),0.015}); 
+//    AnyDrawNode drw={RGB={1,0,0};ScaleXYZ={1,1,1}*0.005;};
+  };
+  
+  
+  
+  AnyRefNode Ellipsoid_ts ={
+    
+    sRel=.ControlNode0_ts.sRel;
+    AnySurfEllipsoid  ellipsoid ={ 
+      
+      AnyVar r1 = vnorm(..ControlNode0_ts.sRel-..ControlNode1_ts.sRel);
+      AnyVar r2 = vnorm(..ControlNode0_ts.sRel-..ControlNode2_ts.sRel);
+      AnyVar r3 = vnorm(..ControlNode0_ts.sRel-..ControlNode3_ts.sRel);
+   
+      Radius ={r1,r2,r3};
+//      AnyDrawParamSurf drw ={};
+    };
+  };  
+};
+
+
+#endif
+
+
+#if BM_ARM_THORAX_SCAPULA_CONTACT == _ELLIPSOID_CONTACT_
+
+//measure needs to always exist 
+AnyKinPointSurface  ScapulaTSThoraxMeasure = {
+    AnyRefFrame &r1 = ..Seg.Scapula.ScapulaSlidingTS;
+    AnySurface &s1 = ..ShoulderRef.ScapulaEllipsoidOrigin.Elipse;
+    NormedMeasureOnOff = Off;
+  };
+
+#endif
+
+AnyReacForce ScapulaTSThorax_ContactReaction = {
+  Type = NonNegative;
+  AnyKinMeasure &ref=.ScapulaTSThoraxMeasure ;
+};  
+
+#if BM_ARM_CLAVICULA_ROTATION_RHYTHM
+/// Rhythm to distribute axial rotation of the clavicula 
+/// equally between sterno-clavicula  and acromio-clavicual joint
+AnyKinEq SternoClavicularRotationRhythm  = 
+{
+  AnyKinMeasureLinComb CombinedMeasure = 
+  {
+    AnyKinMeasure& SC = ...InterfaceFolder.SternoClavicular.BackwardAxialRotation;
+    AnyKinMeasure& AC = ...InterfaceFolder.AcromioClavicular.PosteriorTilt;
+    Coef = {{1,-1}};
+    OutDim = 1;
+  };
+
+  // Use a template to create the weight function, so
+  // the weight values can be overridden by the user. 
+  Template_AnyFunConst Weights (NUMBER_OF_ELEMENTS=..nDim) = {};
+  WeightFun ={&Weights.Fun};
+  #if (BM_ARM_SHOULDER_RHYTHM == _RHYTHM_SOFT_) | (BM_ARM_CLAVICULA_ROTATION_RHYTHM == _RHYTHM_SOFT_)
+  CType= repmat(nDim,Soft);
+  #endif
+
+};
+#endif
+
+
+
+ #include "ScapulaConoideumDriver.any"
+  
+
+#if BM_ARM_SHOULDER_RHYTHM
+
+  #include "ShoulderRhythm.any"
+
+#endif
+
+
+// Deprecated, Use the name HumeroUlnarJoint instead. Left here for backwards compatability.
+AnyFolder &FE = HumeroUlnarJoint;
+
+
+/// Deprecated. Please use the forearm rotation measure
+/// in the interface folder. Left here for backwards compatibility. 
+AnyKinMeasureOrg PS = {
+  AnyKinRotational &Jnt = .ProximalRadioUlnarJoint.Orientation;
+  MeasureOrganizer = {0};
+};

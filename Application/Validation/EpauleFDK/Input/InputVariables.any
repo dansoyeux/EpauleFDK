@@ -45,5 +45,5 @@ AnyFolder InputVariables = {
     Vue == 2 : Fixed view, face to glenoid
   ----------------------------- */
 //  #define Camera 0
-  #define Vue 2
+  #define Vue 1
 };
