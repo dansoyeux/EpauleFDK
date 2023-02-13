@@ -122,15 +122,30 @@ AnyFolder Drivers = {
     Reaction.Type={Off};
   };
 
-  // Abduction movement similar to Bergmann's experiment.
-  AnyKinEqFourierDriver AbductionDriverRight={
-    AnyKinMeasure& ref1 =...BodyModel.Interface.Right.GlenohumeralAbduction;
+//  // Abduction movement similar to Bergmann's experiment.
+//  AnyKinEqFourierDriver AbductionDriverRight={
+//    AnyKinMeasure& ref1 =...BodyModel.Interface.Right.GlenohumeralAbduction;
+//    Type = Sin;
+//    Freq = 0.0625; // 0.1;
+//    A = { {0.0, 45*pi/180} };
+//    B = { {0.0, 0.0 } };
+//    Reaction.Type = {Off};    
+//  };
+
+  // Abduction movement. Modified compared to the Bergmann Model to introduce slower beginning and ending
+  AnyVar startangle = 15;
+  AnyVar endangle = 120;
+    AnyKinEqFourierDriver AbductionDriverRight={
+    AnyKinMeasureOrg &ref1 =...BodyModel.Interface.Right.GlenohumeralAbduction;
     Type = Sin;
-    Freq = 0.0625; // 0.1;
-    A = { {0.0, 45*pi/180} };
-    B = { {0.0, 0.0 } };
+
+    AnyVar w = pi/Main.Study.tEnd; 
+    Freq = w/(2*pi) ;
+    A = { {(.startangle+.endangle)/2, (.endangle-.startangle)/2}*pi/180 };
+    B = { {pi/2, -pi/2} };
     Reaction.Type = {Off};    
   };
+
   
   // Keep the hand in the frontal plane
   AnyKinEq HandConstraint = {
