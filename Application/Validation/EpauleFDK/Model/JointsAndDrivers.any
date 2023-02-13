@@ -89,9 +89,10 @@ AnyFolder Drivers = {
   // ************************************
   
   //Sterno clavicular joint driver
+#if BM_ARM_SHOULDER_RHYTHM == 0
   AnyKinEqSimpleDriver SCDriverRight ={
-    AnyKinMeasure& ref1 =...BodyModel.Interface.Right.SternoClavicularProtraction;
-    AnyKinMeasure& ref2 =...BodyModel.Interface.Right.SternoClavicularElevation;
+    AnyKinMeasureOrg &ref1 =...BodyModel.Interface.Right.SternoClavicularProtraction;
+    AnyKinMeasureOrg &ref2 =...BodyModel.Interface.Right.SternoClavicularElevation;
     DriverPos = pi/180*{
       .JntPos.Right.SternoClavicularProtraction,
       .JntPos.Right.SternoClavicularElevation
@@ -102,8 +103,13 @@ AnyFolder Drivers = {
     };
     Reaction.Type={Off,Off};
   };
+  #endif
+
+ 
   
-  // Glenohumeral joint 
+  // ************************************
+  // Drivers for GH
+  // ************************************
   AnyKinEqSimpleDriver GHDriverRight={
 //    AnyKinMeasure& ref1 =...BodyModel.Interface.Right.GlenohumeralAbduction;
 //    AnyKinMeasure& ref2 =...BodyModel.Interface.Right.GlenohumeralFlexion;
