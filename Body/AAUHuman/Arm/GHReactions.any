@@ -164,7 +164,7 @@ AnyFolder GHReactions={
   
   
   //General muscles are deactivated if FDK is activated
-//  #if BallAndSocket == 1
+  #if BallAndSocket == 1
   AnyVar Strength =5000;
   
   AnyMuscleModel MuscleMdl={F0=.Strength;};
@@ -409,7 +409,7 @@ AnyFolder GHReactions={
     //    };
     //
       };
-//      #endif
+      #endif
     
   };
   
