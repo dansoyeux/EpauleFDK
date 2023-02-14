@@ -151,9 +151,9 @@ AnyForceSurfaceContact ProtheseContact = {
   
   AnyDrawForceSurface drw = {
     Visible = On;
-    //Opacity = 1;
-    //DrawSurf1RGB = {0, 0, 0};
-    //DrawSurf2RGB = {1, 1, 1};
+    Opacity = 1;
+    DrawSurf1RGB = {0, 0, 0};
+    DrawSurf2RGB = {1, 1, 1};
     //AnyStyleDrawMaterial &<Insert name0> = <Insert object reference (or full object definition)>; You can make any number of these objects!
   };
 
@@ -367,15 +367,24 @@ AnyMuscleModel ReactionMuscle = {
 AnyKinPLine ConoideumLigament = {
   AnyRefNode &scapula = ..Seg.Scapula.conoid;
   AnyRefNode &clavicle = ..Seg.Clavicula.conoid;   
+  
+  //  Ligament force hidden if prosthetic vue
+  #if Vue == 1
   AnyDrawPLine drwline= {Thickness=0.005;RGB={1,0,0};};
+  #endif
 };
 
 //Artificial muscle will produce reaction in the ligament
 AnyMuscleViaPoint ConoidLigamentReaction = {
   AnyRefNode &scapula = ..Seg.Scapula.conoid;
   AnyRefNode &clavicle = ..Seg.Clavicula.conoid; 
-  AnyMuscleModel &ref = .ReactionMuscle; 
+  AnyMuscleModel &ref = .ReactionMuscle;
+ 
+  //  Ligament force hidden if prosthetic vue  
+  #if Vue == 1 
   AnyDrawMuscle drwlig = {RGB={0,0,1};MaxStress = 75000000.000000;};
+  #endif
+  
   EXCLUDE_MUSCLE_METABOLISM
    
 };
@@ -384,9 +393,12 @@ AnyMuscleViaPoint TrapezoidLigamentReaction = {
   AnyRefNode &scapula = ..Seg.Scapula.trapezoid;
   AnyRefNode &clavicle = ..Seg.Clavicula.trapezoid;   
   AnyMuscleModel &ref = .ReactionMuscle; 
+
+  //  Ligament force hidden if prosthetic vue
+  #if Vue == 1
   AnyDrawMuscle drwlig = {RGB={0,0,1};MaxStress = 75000000.000000;};
   EXCLUDE_MUSCLE_METABOLISM
-   
+  #endif 
 };
 
 

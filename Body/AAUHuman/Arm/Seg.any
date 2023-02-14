@@ -198,13 +198,7 @@ AnySeg Scapula ={
     #include "../DrawSettings/BML.any"
   };
   #endif
-  
-  
-  
-  
-  
-  
-  
+
   
   AnyVec3 ConoidStd=Data.conoid_pos;
   

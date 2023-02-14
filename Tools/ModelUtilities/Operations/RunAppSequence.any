@@ -1,8 +1,3 @@
- // Switch to define an automatic save of results to the Output folder
-#ifndef AutoSaveOption 
-#define AutoSaveOption 0
-#endif
-
 /**Execute this operation to run the model in the intended operation sequence.  
 It is also possible to run operations seperately, by manual selections in the operation tree*/
 AnyOperationSequence RunApplication = {
@@ -14,11 +9,28 @@ AnyOperationSequence RunApplication = {
   ///This operation is the inverse dynamic analysis
   AnyOperation &InvAnal=Main.Study.InverseDynamics;
   
-  #if AutoSaveOption 
-  /// This operation saves the output of the study to an h5 file in the Output folder
-  AnyOperationMacro save = {
-        MacroStr={ "classoperation Main.Study.Output " + strquote("Save data") + " --type=Deep" + " --file="+ strquote(ANYBODY_PATH_OUTPUT + ANYBODY_NAME_MAINFILE + ".anydata.h5")};
+  
+  /// This operation saves the output of the study to an .h5 file in the Output folder
+  AnyOperation &SaveH5=Main.SaveResultsh5;
+  
+};
+
+// Operation to load and replay a previous .h5 result file
+AnyOperationSequence LoadAndReplay = {
+  
+  AnyOperationMacro LoadData ={
+    MacroStr = {"classoperation Main.Study.Output " + strquote("Load data") + "--file=" + strquote(ANYBODY_PATH_OUTPUT + m_ResultFolder + m_LoadFile + ".anydata.h5")};
   };
-  #endif
-};  
+  AnyOperation &Replay=Main.Study.Replay;
+  
+};
+
+// This operation saves the output of the study to an h5 file in the Output folder
+AnyOperationSequence SaveResultsh5 ={
+  AnyOperationMacro SaveResultsh5 = {
+    MacroStr={ "classoperation Main.Study.Output " + strquote("Save data") + " --type=Deep" + " --file="+ strquote(ANYBODY_PATH_OUTPUT + m_ResultFolder + m_ResultFile + ".anydata.h5")};
+  };
+  
+};
+
 

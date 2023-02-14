@@ -30,10 +30,10 @@ Main = {
     BodyModel.Right.ShoulderArm.Seg.Humerus.gh = {
       AnyRefNode Bergmann = {
         ARel = RotMat(90*pi/180,y);
-//        AnyDrawRefFrame drwref = {
-//          RGB = {1,0,0};
-//          ScaleXYZ = {1,1,1}/5;
-//        };
+        AnyDrawRefFrame drwref = {
+          RGB = {0,1,0};
+          ScaleXYZ = {1,1,1}/15;
+        };
       };
     };
   };
@@ -60,14 +60,14 @@ Main = {
            *Model.HumanModel.Right.ShoulderArm.Jnt.GHReactions.ResultanForce.FTotalGlobal')';
     #endif
     
-    // Laurane   
+    // Lauranne   
     //    tEnd = DesignVar(120.0); // 5;
     
     //For testing
     tEnd = 8.0; // 5;
     Gravity = {0.01, -9.81, 0.01};
     
-    //Laurane
+    //Lauranne
     //nStep = 60;
     
     //For testing
@@ -84,7 +84,7 @@ Main = {
     };
     #endif
     
-    
+//    Mesure of abduction angle (GH angle mesure is xzy)
     AnyVar rot = Main.HumanModel.BodyModel.Interface.Right.GlenohumeralAbduction.Pos[0]; // Total Abduction angle [rad]
     AnyVar rotD= rot*180/pi; // Total Abduction angle [deg]
     
@@ -94,7 +94,6 @@ Main = {
 //        #if BM_ARM_MUSCLES_RIGHT == CONST_MUSCLES_3E_HILL | BM_ARM_MUSCLES_RIGHT == CONST_MUSCLES_SIMPLE  
 //          #include "Output/Output_File.any"
 //        #endif  
-    
     
     
     

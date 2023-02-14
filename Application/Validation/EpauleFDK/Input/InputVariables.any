@@ -5,14 +5,23 @@ Variables and parameters to modify at each simulation.
 AnyFolder InputVariables = {
 
   /* -- FILES/FOLDERS NAMES --
+  Names of files to load or save in the Output folder
   m_ResultFile :   Name for results file (saved as .txt or .h5)
+  m_LoadFile : Name for the result file to load (.h5)
   m_ResultFolder : Name for folder results. !!Must be created on computer before!!
-  m_ResultPath :   Complete path to the "NameFolder" folder
-  WARNING:    Be sure that the m_ResultFolder variable refers to an existing folder on your computer !!
+      WARNING:    Be sure that the m_ResultFolder variable refers to an existing folder on your computer !!
   ----------------------------- */
-  #define m_ResultFile "Results_17_07_2015_version_neutre"
-  #define m_ResultFolder "Ceraver\"
-  #define m_ResultPath "../Results"
+  
+  //Name of the .h5 data to save (with the SaveResultsh5 operation)
+  #define m_ResultFile "Results_14_02_2023_version_neutre"
+  #define m_ResultFolder "SaveData/"
+
+
+  // Name of the .h5 data to load (with the LoadAndReplay operation)
+  // LoadAndReplay : Operation to load and replay a previous .h5 result file
+  #define m_LoadFile "Results_13_02_2023_version_neutre"
+
+  
   
   /* -------- IMPLANTS -------- 
   NAMES AND POSITIONS: Managed in an axternal file: 
