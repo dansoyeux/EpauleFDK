@@ -131,7 +131,7 @@ AnyKinEqSimpleDriver GHLinCon = {
 //      (.GHLin.Pos[1]-Main.InputVariables.JointPosition.py)/Main.InputVariables.JointPosition.py,
 //      (.GHLin.Pos[2]-Main.InputVariables.JointPosition.pz)/Main.InputVariables.JointPosition.pz
 //    };
-//    
+    
     
     AnyKinLinear &ref = .GHLin;
           

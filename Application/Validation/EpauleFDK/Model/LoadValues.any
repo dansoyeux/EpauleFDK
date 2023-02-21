@@ -40,7 +40,7 @@ InputVar2={
       AnyVar k4 = -0.08637 ; 
       AnyVar kz = 0;   //ML (Lat=+). NB: ML managed by contact between prosthetic components
 
-////Values from Bigliani
+////Values : [Bigliani, 1992] equation calculated 4th order equation [Debski and al., 1999]
 //      AnyVar k0 = 5.62;   
 //      AnyVar k1 = -1.68;  
 //      AnyVar k2 = 1.12;
