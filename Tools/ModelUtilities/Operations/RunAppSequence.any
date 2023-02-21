@@ -28,7 +28,8 @@ AnyOperationSequence LoadAndReplay = {
 // This operation saves the output of the study to an h5 file in the Output folder
 AnyOperationSequence SaveResultsh5 ={
   AnyOperationMacro SaveResultsh5 = {
-    MacroStr={ "classoperation Main.Study.Output " + strquote("Save data") + " --type=Deep" + " --file="+ strquote(ANYBODY_PATH_OUTPUT + m_ResultFolder + m_ResultFile + ".anydata.h5")};
+    MacroStr={ "classoperation Main.Study.Output " + strquote("Save data") + " --type=Deep" + " --file="+ strquote(ANYBODY_PATH_OUTPUT + m_ResultFolder + m_ResultFile + ".anydata.h5")
+    };
   };
   
 };

@@ -33,21 +33,21 @@ InputVar2={
       F = k0 + k1*eps + k2*eps^2 + k4*eps^4
     ----------------------------- */
     AnyFolder FDK ={      
-//      AnyVar k0 = 10.75;   
-//      AnyVar k1 = -7.787;  
-//      AnyVar k2 = 4.391;
-//      AnyVar k3 = 0 ;
-//      AnyVar k4 = -0.08637 ; 
-//      AnyVar kz = 0;   //ML (Lat=+). NB: ML managed by contact between prosthetic components
-
-//Values from Bigliani
-      AnyVar k0 = 5.62;   
-      AnyVar k1 = -1.68;  
-      AnyVar k2 = 1.12;
-      AnyVar k3 = 0.9 ;
-      AnyVar k4 = -0.05 ; 
+      AnyVar k0 = 10.75;   
+      AnyVar k1 = -7.787;  
+      AnyVar k2 = 4.391;
+      AnyVar k3 = 0 ;
+      AnyVar k4 = -0.08637 ; 
       AnyVar kz = 0;   //ML (Lat=+). NB: ML managed by contact between prosthetic components
 
+////Values from Bigliani
+//      AnyVar k0 = 5.62;   
+//      AnyVar k1 = -1.68;  
+//      AnyVar k2 = 1.12;
+//      AnyVar k3 = 0.9 ;
+//      AnyVar k4 = -0.05 ; 
+//      AnyVar kz = 0;   //ML (Lat=+). NB: ML managed by contact between prosthetic components
+//
 
 };
     

@@ -119,19 +119,19 @@ AnyKinEqSimpleDriver GHLinCon = {
 
   AnyForce SpringForce = {
     //Eps code lauranne, delta_l not strain/elongation %
-//    AnyFloat Eps = {
-//      .GHLin.Pos[0]-Main.InputVariables.JointPosition.px,
-//      .GHLin.Pos[1]-Main.InputVariables.JointPosition.py,
-//      .GHLin.Pos[2]-Main.InputVariables.JointPosition.pz
-//    };
-    
-    //Eps avec correction elongation (delta_l/l_0)
     AnyFloat Eps = {
-      (.GHLin.Pos[0]-Main.InputVariables.JointPosition.px)/Main.InputVariables.JointPosition.px,
-      (.GHLin.Pos[1]-Main.InputVariables.JointPosition.py)/Main.InputVariables.JointPosition.py,
-      (.GHLin.Pos[2]-Main.InputVariables.JointPosition.pz)/Main.InputVariables.JointPosition.pz
+      .GHLin.Pos[0]-Main.InputVariables.JointPosition.px,
+      .GHLin.Pos[1]-Main.InputVariables.JointPosition.py,
+      .GHLin.Pos[2]-Main.InputVariables.JointPosition.pz
     };
     
+    //Eps avec correction elongation (delta_l/l_0)
+//    AnyFloat Eps = {
+//      (.GHLin.Pos[0]-Main.InputVariables.JointPosition.px)/Main.InputVariables.JointPosition.px,
+//      (.GHLin.Pos[1]-Main.InputVariables.JointPosition.py)/Main.InputVariables.JointPosition.py,
+//      (.GHLin.Pos[2]-Main.InputVariables.JointPosition.pz)/Main.InputVariables.JointPosition.pz
+//    };
+//    
     
     AnyKinLinear &ref = .GHLin;
           

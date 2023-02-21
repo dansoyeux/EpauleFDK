@@ -16,24 +16,25 @@ AnyFolder InputVariables = {
 
   //Code test--------------
   
-  //Name of the .h5 data to save (with the SaveResultsh5 operation)
-  #define m_ResultFile "Results_FDK_correction_pourcentage_elongation"
+  // Name of the .h5 data to save (with the SaveResultsh5 operation)
+  #define m_ResultFile "test"
   #define m_ResultFolder "SaveData/test/"
-  #define m_LoadFile "Results_FDK_correction_pourcentage_elongation"
+  #define m_LoadFile "Results_13_02_2023_version_neutre"
   
   //--------------------
 
 
   /*
   //------------------------Vrai code  
+  // Name of the .h5 data to save (with the SaveResultsh5 operation)
   #define m_ResultFile "Results_14_02_2023_version_neutre"
   #define m_ResultFolder "SaveData/"
 
-
-   Name of the .h5 data to load (with the LoadAndReplay operation)
+  
+  // Name of the .h5 data to load (with the LoadAndReplay operation)
   // LoadAndReplay : Operation to load and replay a previous .h5 result file
   #define m_LoadFile "Results_13_02_2023_version_neutre"
-//--------------------------------
+  //--------------------------------
 */
   
   
