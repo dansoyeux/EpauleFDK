@@ -5,7 +5,7 @@
 
 Main = {
   
-  
+  #define EVALUATE_MOMENT_ARMS 1
   
   // Input Parameters. To modify at each simulation
   #include "Input/InputVariables.any"

@@ -17,7 +17,7 @@ AnyFolder InputVariables = {
   //Code test--------------
   
   // Name of the .h5 data to save (with the SaveResultsh5 operation)
-  #define m_ResultFile "Results_21-02_version_neutre"
+  #define m_ResultFile "Results_02-03_version_neutre_moment_arms"
   #define m_ResultFolder "SaveData/"
   #define m_LoadFile "Results_13_02_2023_version_neutre"
   
