@@ -14,8 +14,8 @@ AnySeg Clavicula ={
   AnyRefNode AnatomicalFrame = {};
   AnyRefNode& ScalingNode = AnatomicalFrame;
   AnyFunTransform3D& GeomScale = Scale;
-    
-
+  
+  
   AnyFolder NeutralPositionOnPelvis = {
     AnyVec3 StandardsRel =.Data.NeutralPositionOnPelvis_pos;
     //sRel=.Scale(StandardsRel*.Mirror);
@@ -29,19 +29,19 @@ AnySeg Clavicula ={
     AnyMat33 Pelvis_Axes = {{1.000000, 0.000000, 0.000000}, {0.000000, 1.000000, 0.000000}, {0.000000, 0.000000, 1.000000}};
     AnyMat33 ARel=Clavicula_Axes'*Pelvis_Axes;
   };
-
+  
   #if _LEFT_RIGHT_ == "RIGHT"
-    AnyFolder &TrunkIJRef = ....Trunk.SegmentsRibCage.SternumSeg.ij;
+  AnyFolder &TrunkIJRef = ....Trunk.SegmentsRibCage.SternumSeg.ij;
   #else
-    AnyFolder &TrunkIJRef = ....Trunk.SegmentsRibCage.SternumSeg.iji;
+  AnyFolder &TrunkIJRef = ....Trunk.SegmentsRibCage.SternumSeg.iji;
   #endif
-
+  
   r0 = ....Trunk.SegmentsRibCage.SternumSeg.r0 
-       + (TrunkIJRef.sRel + TrunkIJRef.scj.sRel * TrunkIJRef.ARel')*....Trunk.SegmentsRibCage.SternumSeg.Axes0'
-       - scj.sRel*Axes0';
-
+  + (TrunkIJRef.sRel + TrunkIJRef.scj.sRel * TrunkIJRef.ARel')*....Trunk.SegmentsRibCage.SternumSeg.Axes0'
+  - scj.sRel*Axes0';
+  
   Axes0= ....Trunk.SegmentsRibCage.SternumSeg.Axes0*NeutralPositionOnPelvis.ARel';
-
+  
   #include "../DrawSettings/Nodes.any"
   
   AnyVar MassS = ..MassScaling.Clavicula.MassScale;
@@ -56,7 +56,7 @@ AnySeg Clavicula ={
   AnyVar Ixx = 0.5*Mass*Radius*Radius;
   AnyVar Izz = Iyy; 
   Jii = {Ixx,Iyy,Izz};
-
+  
   sCoM = Scale((Data.ac_pos+Data.scj_pos)/2*Mirror); // midpoint between acromioclavicular joint and scapuloclavicular  
   JaboutCoMOnOff = On;
   
@@ -99,7 +99,7 @@ AnySeg Scapula ={
   AnyRefNode AnatomicalFrame = {};
   AnyRefNode& ScalingNode = AnatomicalFrame;
   AnyFunTransform3D& GeomScale = Scale;
-
+  
   
   AnyFolder NeutralPositionOnPelvis = {
     
@@ -120,7 +120,7 @@ AnySeg Scapula ={
     
     AnyMat33 ARel=Scapula_Axes'*Pelvis_Axes;
     
-  
+    
   };
   
   r0 = .Clavicula.acj.sRel*.Clavicula.Axes0'+.Clavicula.r0 -  acj.sRel*Axes0';
@@ -191,19 +191,14 @@ AnySeg Scapula ={
     #include "../DrawSettings/BML.any"
   };
   
-#if BM_ARM_DELTOID_WRAPPING
+  #if BM_ARM_DELTOID_WRAPPING
   AnyRefNode coronoid= {
-   //^ Node used for the anterior deltoid wrapping surface scaling
+    //^ Node used for the anterior deltoid wrapping surface scaling
     sRel = .Scale(.Data.coronoid_pos*.Mirror);
     #include "../DrawSettings/BML.any"
   };
-#endif
-  AnyRefNode gh = {
-    sRel = .Scale(.Data.gh_pos*.Mirror);
-    //AnyDrawRefFrame drw={};
-    #include "../DrawSettings/BML.any"
-    #include "../DrawSettings/JointAxesDistal.any"
-  };
+  #endif
+
   
   AnyVec3 ConoidStd=Data.conoid_pos;
   
@@ -211,6 +206,89 @@ AnySeg Scapula ={
   AnyRefNode trapezoid = {sRel = .Scale(.Data.trapezoid_pos*.Mirror);};
   
   
+  //--------------------------------------------------------------------------------------------
+  // Glenoid implant
+  
+  AnyFolder &Param = Main.InputVariables.ImplantParameters;
+  AnyRefNode GlenImplantPos = {
+    sRel = .Param.GlenPosition.Position;
+  ARel = .Param.GlenPosition.Rotation;
+    
+    AnySurfSTL GleneSTL = {
+      FileName = "../../../Body/STLModels/ImplantModels/" + ..Param.ImplantNames.GlenoidName+ ".stl";
+      ScaleXYZ = {1,1,1}*0.001;
+      AnyDrawSurf drw = {
+        FileName = .FileName;
+        RGB = {1,0.2,0};
+        ScaleXYZ = {1,1,1}*0.001;
+      };
+    };    
+  };    
+  
+  // End glenoid implant
+    
+  //--------------------------------------------------------------------------------------------
+  
+  
+  //gh du modle normal  
+  //  AnyRefNode gh = {
+  //    sRel = .Scale(.Data.gh_pos*.Mirror);
+  //    //AnyDrawRefFrame drw={};
+  //    #include "../DrawSettings/BML.any"
+  //    #include "../DrawSettings/JointAxesDistal.any"
+  //  };
+  
+  
+  //gh Lauranne
+  AnyRefNode gh = {
+    AnyVec3 d= {0.0075,0,-0.01};
+    sRel = .Scale({0.015898, -0.050863, -0.024381}+d)*.Mirror;
+    //    
+    
+    //  #if Camera ==0
+    AnyDrawRefFrame drw={
+      ScaleXYZ={1,1,1}*0.06;
+      RGB={0.5,0.5,1};
+    };
+    //  #endif  
+    
+    // nouvelle ref en gh, oriente selon les axes de la glene prothetique
+    AnyRefNode ghProth = {
+      ARel = ..Param.GlenPosition.Rotation ;
+      
+      //    #if Camera==0
+      AnyDrawRefFrame drw={
+        ScaleXYZ={1,1,1}*0.06;
+        RGB={0.9,0.2,0.2};
+      };
+      //    #endif
+      
+      // Cam Position for glen view
+      #if Vue==2
+      AnyRefNode CamPos = {
+        sRel = {0,0,0};  // (Ant, sup, lat)
+        ARel = RotMat(-pi/5,y);
+        AnyDrawRefFrame drw={
+          ScaleXYZ={1,1,1}*0.06;
+          RGB={0,0.2,0.2};
+        };
+        
+        AnyRefNode CamUp = {
+          sRel = {0,0.2,0};
+        };
+      };
+      #endif
+      
+    };
+    
+    
+    //AnyDrawRefFrame drw={};
+    #include "../DrawSettings/BML.any"
+    #include "../DrawSettings/JointAxesDistal.any"
+    
+  };//End gh
+  
+  //--------------------------------------------------------------------------------------------
   
 }; //Scapula
 
@@ -244,22 +322,22 @@ AnySeg Humerus ={
   Jii = {Ixx,Iyy,Izz};
   
   sCoM=Scale(Data.sCoM_pos*Mirror);
-
+  
   
   JaboutCoMOnOff = On;
-
+  
   AnyRefNode AnatomicalFrame = {};
   AnyRefNode& ScalingNode = AnatomicalFrame;
   AnyFunTransform3D& GeomScale = Scale;
-
-  AnyDrawSurf DrwSurf = {
-    FileName = ...STL.FileNameHumerus;
-    RGB =...ColorRef.Segments;
-    ScaleXYZ={1,1,1}*.Mirror;
-    AnyFunTransform3D& Scale = .Scale;
-
-    Opacity = ...BonesOpacity.Humerus;
-  };
+  
+  //  AnyDrawSurf DrwSurf = {
+  //    FileName = ...STL.FileNameHumerus;
+  //    RGB =...ColorRef.Segments;
+  //    ScaleXYZ={1,1,1}*.Mirror;
+  //    AnyFunTransform3D& Scale = .Scale;
+  //
+  //    Opacity = ...BonesOpacity.Humerus;
+  //  };
   
   #if BM_ARM_DELTOID_WRAPPING == _DELTOID_WRAPPING_RAKE_
   AnyRefNode DeltoidConnectorCenter = {sRel=.art_tub_minus_tub_majus.sRel;};
@@ -292,6 +370,55 @@ AnySeg Humerus ={
     #include "../DrawSettings/JointAxesDistal.any"
     
   };
+  
+  
+  
+  //--------------------------------------------------------------------------------------------  
+  //Draw  Humerus
+  AnyVec3 OffSet =-{-0.001379, 0.008999 , -0.009119};
+  
+  
+  // Modele osseux Humerus
+  AnyRefNode HumerusBoneGeometryNode={ 
+    sRel=.OffSet*.Mirror;
+    
+    
+    //    #if Camera==0
+    AnyDrawSurf DrwSurf = {
+      FileName = "..\..\STLModels\Humerus\SourceHumerus";
+      RGB =....ColorRef.Segments;
+      Opacity = 0.7; // ....BonesOpacity.Humerus;
+    };
+    
+    //    #endif
+    
+    
+    //--------------------------------------------------------------------------------------------
+    // Humeral  implant
+    AnyFolder &Param = Main.InputVariables.ImplantParameters;
+    AnyRefNode HumImplantPos = {
+      sRel = .Param.HumPosition.Position;
+      ARel = .Param.HumPosition.Rotation;
+      
+      AnySurfSTL ProtHumSTL = {
+        FileName = "../../../Body/STLModels/ImplantModels/" + ..Param.ImplantNames.HumerusName + ".stl";
+        ScaleXYZ = {1,1,1}*0.001;
+        
+        //        #if Camera==0
+        AnyDrawSurf drw= {
+          FileName = .FileName;
+          RGB = {0.2,0.4,0.5};
+          ScaleXYZ = {1,1,1}*0.001;
+          // Opacity = .5;
+        };
+        
+        
+        //        #endif
+      };    
+    };
+    // END Humeral implant  
+  }; // END HumerusBoneGeometry
+  //--------------------------------------------------------------------------------------------
   
   
   
@@ -334,7 +461,7 @@ AnySeg Ulna ={
   AnyRefNode AnatomicalFrame = {};
   AnyRefNode& ScalingNode = AnatomicalFrame;
   AnyFunTransform3D& GeomScale = Scale;
-    
+  
   AnyRefNode fe = { sRel=.Scale(.Data.fe_pos*.Mirror); 
     #include "../DrawSettings/JointAxesProximal.any"
   };
@@ -421,9 +548,9 @@ AnySeg Radius ={
   Jii = {Ixx,Iyy,Izz};
   
   sCoM=Scale(Data.sCoM_pos*Mirror);
-
+  
   JaboutCoMOnOff = On;
-      
+  
   AnyRefNode AnatomicalFrame = {};
   AnyRefNode& ScalingNode = AnatomicalFrame;
   AnyFunTransform3D& GeomScale = Scale;
@@ -438,7 +565,7 @@ AnySeg Radius ={
     sRel = .Scale(.Data.PointHumeroRadialJoint_pos*.Mirror);
     ARel = .PS2Reac.ARel;
   };
-
+  
   AnyRefNode PS2Reac = {
     sRel = .Scale(.Data.PS2Reac_pos*.Mirror);
     ARel = RotMat(.PointPS2.sRel, .PS.sRel, .rs.sRel);
@@ -477,13 +604,13 @@ AnySeg Radius ={
 
 
 
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
 
 
 //this seg is introduced because the flexion extension axis in the wrist is not coincident with the radial ulnar deviation axis
@@ -491,14 +618,15 @@ AnySeg WristJointSeg ={
   Mass=0;
   Jii={0,0,0};
   r0=.Radius.wj.sRel*.Radius.Axes0'+.Radius.r0;
-//  Axes0={
-//    {.Hand.Axes0[0][0],.Hand.Axes0[0][1],.Hand.Axes0[0][2]},
-//    {.Hand.Axes0[1][0],.Hand.Axes0[1][1],.Hand.Axes0[1][2]},
-//    {.Hand.Axes0[2][0],.Hand.Axes0[2][1],.Hand.Axes0[2][2]}}*RotMat(0.5*(1-..Sign)*pi,x);
+  //  Axes0={
+  //    {.Hand.Axes0[0][0],.Hand.Axes0[0][1],.Hand.Axes0[0][2]},
+  //    {.Hand.Axes0[1][0],.Hand.Axes0[1][1],.Hand.Axes0[1][2]},
+  //    {.Hand.Axes0[2][0],.Hand.Axes0[2][1],.Hand.Axes0[2][2]}}*RotMat(0.5*(1-..Sign)*pi,x);
   
   AnyRefNode FlexionExtensionAxis={sRel={0.00,0,0};};
   AnyRefNode RadialUlnarDeviation={sRel={-0.005,0,0};};
 };
+
 
 
 
