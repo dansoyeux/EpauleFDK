@@ -1,0 +1,40 @@
+---- AnyBody Output File ---------------------------------
+Study: Main.Study
+Operation: Main.Study.InverseDynamics
+----------------------------------------------------------
+Constants (Name = Value): 
+FileOut.UpdData = 2
+FileOut.FileName = "SaveData\Results_21-02_version_neutre.txt"
+FileOut.NumberFormat.Digits = 6
+FileOut.NumberFormat.Width = 23
+FileOut.NumberFormat.Style = ScientificNumber
+FileOut.NumberFormat.FormatStr = "%23.6e"
+FileOut.Values = 
+FileOut.Search = 
+FileOut.Format = 0
+FileOut.SepSign = ","
+FileOut.SepSpaceAutoOnOff = On
+FileOut.LineSepSign = ""
+FileOut.Header.TitleSectionOnOff = On
+FileOut.Header.ConstSectionOnOff = On
+FileOut.Header.ConstSectionSaveOptionsOnOff = On
+FileOut.Header.VarSectionOnOff = Off
+FileOut.Header.ColumnNamesOnOff = On
+FileOut.Header.LinePrefix = ""
+FileOut.Header.ShortenNamesOnOff = On
+FileOut.Header.ColumnIDString = "col"
+FileOut.ConstSectionSaveOptionsOnOff = On
+FileOut.SuppressTimeColumnOnOff = Off
+FileOut.nstep =            3.000000e+00
+FileOut.k0 =            1.075000e+01
+FileOut.k1 =           -7.787000e+00
+FileOut.k2 =            4.391000e+00
+FileOut.k4 =           -8.637000e-02
+FileOut.kz =            0.000000e+00
+FileOut.px =           -2.000000e-03
+FileOut.py =            3.000000e-03
+FileOut.pz =            1.000000e-03
+FileOut.kd =            1.000000e+10
+----------------------------------------------------------
+t,FileOut.rot,FileOut.rotD,FileOut.vel,FileOut.pos[0],FileOut.pos[1],FileOut.pos[2],FileOut.angles[0],FileOut.angles[1],FileOut.angles[2],FileOut.Scap_R[0][0],FileOut.Scap_R[0][1],FileOut.Scap_R[0][2],FileOut.Scap_R[1][0],FileOut.Scap_R[1][1],FileOut.Scap_R[1][2],FileOut.Scap_R[2][0],FileOut.Scap_R[2][1],FileOut.Scap_R[2][2],FileOut.Scap_P[0],FileOut.Scap_P[1],FileOut.Scap_P[2],FileOut.Gh_R[0][0],FileOut.Gh_R[0][1],FileOut.Gh_R[0][2],FileOut.Gh_R[1][0],FileOut.Gh_R[1][1],FileOut.Gh_R[1][2],FileOut.Gh_R[2][0],FileOut.Gh_R[2][1],FileOut.Gh_R[2][2],FileOut.Gh_P[0],FileOut.Gh_P[1],FileOut.Gh_P[2],FileOut.GhProth_R[0][0],FileOut.GhProth_R[0][1],FileOut.GhProth_R[0][2],FileOut.GhProth_R[1][0],FileOut.GhProth_R[1][1],FileOut.GhProth_R[1][2],FileOut.GhProth_R[2][0],FileOut.GhProth_R[2][1],FileOut.GhProth_R[2][2],FileOut.GhProth_P[0],FileOut.GhProth_P[1],FileOut.GhProth_P[2],FileOut.RotG[0][0],FileOut.RotG[0][1],FileOut.RotG[0][2],FileOut.RotG[1][0],FileOut.RotG[1][1],FileOut.RotG[1][2],FileOut.RotG[2][0],FileOut.RotG[2][1],FileOut.RotG[2][2],FileOut.PosG[0],FileOut.PosG[1],FileOut.PosG[2],FileOut.Hum_R[0][0],FileOut.Hum_R[0][1],FileOut.Hum_R[0][2],FileOut.Hum_R[1][0],FileOut.Hum_R[1][1],FileOut.Hum_R[1][2],FileOut.Hum_R[2][0],FileOut.Hum_R[2][1],FileOut.Hum_R[2][2],FileOut.Hum_P[0],FileOut.Hum_P[1],FileOut.Hum_P[2],FileOut.ContactForce[0],FileOut.ContactForce[1],FileOut.ContactForce[2],FileOut.ContactForce[3],FileOut.ContactForce[4],FileOut.ContactForce[5],FileOut.ContactForce[6],FileOut.ContactForce[7],FileOut.ContactForce[8],FileOut.ContactForce[9],FileOut.ContactForce[10],FileOut.ContactForce[11],FileOut.COPGlobal[0],FileOut.COPGlobal[1],FileOut.COPGlobal[2],FileOut.COPlocalGhProth[0],FileOut.COPlocalGhProth[1],FileOut.COPlocalGhProth[2],FileOut.COPlocalImplant[0],FileOut.COPlocalImplant[1],FileOut.COPlocalImplant[2],FileOut.ContactArea,FileOut.MaxPenetration,FileOut.MaxMuscleAct,FileOut.ForceTolError
+           0.000000e+00,           2.617994e-01,           1.500000e+01,           2.203319e-17,          -2.418473e-03,           4.298643e-03,           9.637401e-04,          -1.025561e+00,           4.559904e-02,           1.080519e+00,           3.999017e-01,           1.070417e-01,          -9.102861e-01,           1.636804e-01,           9.688518e-01,           1.858357e-01,           9.018245e-01,          -2.233120e-01,           3.699248e-01,           5.835917e-02,           4.452125e-01,           1.680867e-01,           3.999017e-01,           1.070417e-01,          -9.102861e-01,           1.636804e-01,           9.688518e-01,           1.858357e-01,           9.018245e-01,          -2.233120e-01,           3.699248e-01,           9.356811e-02,           3.933744e-01,           1.878276e-01,           7.672279e-01,           3.816239e-01,           5.154848e-01,          -4.288598e-01,           9.028690e-01,          -3.011384e-02,          -4.769074e-01,          -1.979665e-01,           8.563694e-01,           9.356811e-02,           3.933744e-01,           1.878276e-01,           7.672279e-01,           3.816239e-01,           5.154848e-01,          -4.288598e-01,           9.028690e-01,          -3.011384e-02,          -4.769074e-01,          -1.979665e-01,           8.563694e-01,           6.730166e-02,           3.985519e-01,           1.437346e-01,           6.374024e-01,          -6.489087e-01,          -4.154944e-01,          -4.393315e-01,          -7.490559e-01,           4.958862e-01,          -6.330134e-01,          -1.335393e-01,          -7.625361e-01,           9.099305e-02,           4.009664e-01,           1.812384e-01,           3.501782e+01,          -1.142505e+00,           6.830950e+01,          -2.712691e-01,          -8.121645e-04,           1.390452e-01,          -3.501782e+01,           1.142505e+00,          -6.830950e+01,           6.349004e-02,           3.058558e-01,          -2.742844e-02,           8.202287e-02,           3.972883e-01,           1.637170e-01,           9.621614e-04,           3.900829e-03,          -2.671677e-02,           2.306657e-03,           5.212007e-04,           2.473901e-02,           1.245027e-04,           1.435760e-04,           1.153016e-01,           7.047827e-04

@@ -56,8 +56,8 @@ Main = {
     AnyFolder &Model = .Model;
     #if BallAndSocket == 1
         // Output variables collecting the GH forces in the pertinent coordinate frame
-        AnyVec3 GHReactionInHumerus = -(Model.HumanModel.Right.ShoulderArm.Seg.Humerus.gh.Bergmann.Axes'
-           *Model.HumanModel.Right.ShoulderArm.Jnt.GHReactions.ResultanForce.FTotalGlobal')';
+        AnyVec3 GHReactionInHumerus = -(Model.BodyModel.Right.ShoulderArm.Seg.Humerus.gh.Bergmann.Axes'
+           *Model.BodyModel.Right.ShoulderArm.Jnt.GHReactions.ResultanForce.FTotalGlobal')';
     #endif
     
     // Lauranne   
